@@ -32,7 +32,8 @@
 
 test() ->
     %% shovel can be started with zero shovels configured
-    ok = application:start(rabbit_shovel),
+    %% (already started by plugin framework)
+    %% ok = application:start(rabbit_shovel),
     ok = application:stop(rabbit_shovel),
 
     %% various ways of breaking the config
