@@ -22,7 +22,7 @@ start()           -> start(normal, []), ok.
 
 stop()            -> ok.
 
-start(normal, []) -> rabbit_shovel_mgmt:register(),
+start(normal, []) -> rabbit_shovel_mgmt:maybe_register(),
                      rabbit_shovel_sup:start_link().
 
 stop(_State)      -> ok.
