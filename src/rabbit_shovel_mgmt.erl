@@ -24,9 +24,9 @@
 -include_lib("webmachine/include/webmachine.hrl").
 
 maybe_register() ->
-    case application:get_env(rabbitmq_management, plugins) of
+    case application:get_env(rabbitmq_management, extensions) of
         {ok, Curr} ->
-            application:set_env(rabbitmq_management, plugins,
+            application:set_env(rabbitmq_management, extensions,
                                 ordsets:add_element(?MODULE, Curr)),
             rabbit_mgmt_dispatcher:refresh(),
             ok;
