@@ -1,0 +1,49 @@
+<h1>Shovel Status</h1>
+<div class="updatable">
+<% if (shovels.length > 0) { %>
+<table class="list">
+ <thead>
+  <tr>
+    <th>Name</th>
+    <th>State</th>
+    <th>Source</th>
+    <th>Destination</th>
+    <th>Last update</th>
+  </tr>
+ </thead>
+ <tbody>
+<%
+ for (var i = 0; i < shovels.length; i++) {
+    var shovel = shovels[i];
+%>
+<% if (shovel.state == 'terminated') { %>
+  <tr<%= alt_rows(i)%>>
+    <td><%= shovel.name %></td>
+    <td class="status" colspan="3">
+       <div class="red"><%= shovel.state %></div>
+    </td>
+    <td><%= shovel.timestamp %></td>
+  </tr>
+  <tr>
+    <td colspan="5">
+      <pre><%= fmt_escape_html(shovel.reason) %></pre>
+    </td>
+  </tr>
+<% } else { %>
+  <tr<%= alt_rows(i)%>>
+    <td><%= shovel.name %></td>
+    <td class="status">
+       <div class="green"><%= shovel.state %></div>
+    </td>
+    <td>TODO</td>
+    <td>TODO</td>
+    <td><%= shovel.timestamp %></td>
+  </tr>
+<% } %>
+  <% } %>
+ </tbody>
+</table>
+<% } else { %>
+  <p>... no shovels ...</p>
+<% } %>
+</div>

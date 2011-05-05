@@ -17,7 +17,7 @@
 -module(rabbit_shovel_mgmt).
 
 -export([maybe_register/0]).
--export([dispatcher/0]).
+-export([dispatcher/0, web_ui/0]).
 -export([init/1, to_json/2, content_types_provided/2, is_authorized/2]).
 
 -include_lib("amqp_client/include/amqp_client.hrl").
@@ -36,8 +36,8 @@ maybe_register() ->
 
 %%--------------------------------------------------------------------
 
-dispatcher() ->
-    [{["shovel-status"], ?MODULE, []}].
+dispatcher() -> [{["shovel-status"], ?MODULE, []}].
+web_ui()     -> <<"shovel.js">>.
 
 %%--------------------------------------------------------------------
 
