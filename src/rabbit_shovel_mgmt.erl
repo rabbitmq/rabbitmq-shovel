@@ -22,6 +22,7 @@
 -export([dispatcher/0, web_ui/0]).
 -export([init/1, to_json/2, content_types_provided/2, is_authorized/2]).
 
+-include_lib("rabbitmq_management/include/rabbit_mgmt.hrl").
 -include_lib("amqp_client/include/amqp_client.hrl").
 -include_lib("webmachine/include/webmachine.hrl").
 
@@ -42,9 +43,6 @@ dispatcher() -> [{["shovel-status"], ?MODULE, []}].
 web_ui()     -> [{javascript, <<"shovel.js">>}].
 
 %%--------------------------------------------------------------------
-
-%% TODO this is rather dubious
--record(context, {user, password}).
 
 init(_Config) -> {ok, #context{}}.
 
