@@ -1,4 +1,4 @@
-dispatcher_extensions.push(function(sammy) {
+dispatcher_add(function(sammy) {
         sammy.get('#/shovel-status', function() {
                 render({'shovels': '/shovel-status'},
                        'shovel-status', '#/shovel-status');
