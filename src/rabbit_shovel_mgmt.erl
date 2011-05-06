@@ -85,7 +85,7 @@ format_info({terminated, Reason}) ->
      {reason, print("~p", [Reason])}].
 
 format_ts({{Y, M, D}, {H, Min, S}}) ->
-    print("~w-~w-~w ~w:~w:~w", [Y, M, D, H, Min, S]).
+    print("~w-~2.2.0w-~2.2.0w ~w:~2.2.0w:~2.2.0w", [Y, M, D, H, Min, S]).
 
 format_params(Params) ->
     rabbit_mgmt_format:record(Params#amqp_params{password        = undefined,
