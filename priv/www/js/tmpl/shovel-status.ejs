@@ -35,8 +35,12 @@
     <td class="status">
        <div class="green"><%= shovel.state %></div>
     </td>
-    <td>TODO</td>
-    <td>TODO</td>
+    <td>
+      <%= fmt_shovel_endpoint(shovel.source) %>
+    </td>
+    <td>
+      <%= fmt_shovel_endpoint(shovel.destination) %>
+    </td>
     <td><%= shovel.timestamp %></td>
   </tr>
 <% } %>

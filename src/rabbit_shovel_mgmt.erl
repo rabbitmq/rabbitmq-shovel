@@ -88,9 +88,11 @@ format_ts({{Y, M, D}, {H, Min, S}}) ->
     print("~w-~2.2.0w-~2.2.0w ~w:~2.2.0w:~2.2.0w", [Y, M, D, H, Min, S]).
 
 format_params(Params) ->
-    rabbit_mgmt_format:record(Params#amqp_params{password        = undefined,
-                                                 auth_mechanisms = undefined},
-                              record_info(fields, amqp_params)).
+    Formatted = rabbit_mgmt_format:record(
+                  Params#amqp_params{password        = undefined,
+                                     auth_mechanisms = undefined},
+                  record_info(fields, amqp_params)),
+    [{K, V} || {K, V} <- Formatted, V =/= none].
 
 print(Fmt, Val) ->
     list_to_binary(io_lib:format(Fmt, Val)).
