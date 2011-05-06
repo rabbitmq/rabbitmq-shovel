@@ -50,16 +50,27 @@ content_types_provided(ReqData, Context) ->
    {[{"application/json", to_json}], ReqData, Context}.
 
 to_json(ReqData, Context) ->
-    rabbit_mgmt_util:reply(
-      [format(I) || I <- rabbit_shovel_status:status()], ReqData, Context).
+    rabbit_mgmt_util:reply(status(), ReqData, Context).
 
 is_authorized(ReqData, Context) ->
     rabbit_mgmt_util:is_authorized_admin(ReqData, Context).
 
 %%--------------------------------------------------------------------
 
-format({Name, Info, TS}) ->
-    [{name, Name}, {timestamp, format_ts(TS)} | format_info(Info)].
+status() ->
+    lists:append([status(Node) || Node <- [node() | nodes()]]).
+
+status(Node) ->
+    case rpc:call(Node, rabbit_shovel_status, status, [], infinity) of
+        {badrpc, {'EXIT', {undef, _}}} ->
+            [];
+        Status ->
+            [format(Node, I) || I <- Status]
+    end.
+
+format(Node, {Name, Info, TS}) ->
+    [{name, Name}, {node, Node}, {timestamp, format_ts(TS)} |
+     format_info(Info)].
 
 format_info(starting) ->
     [{state, starting}];
