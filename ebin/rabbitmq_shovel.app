@@ -6,6 +6,7 @@
     rabbit_shovel_status,
     rabbit_shovel_sup,
     rabbit_shovel_worker,
+    rabbit_shovel_mgmt,
     uri_parser
   ]},
   {registered, []},

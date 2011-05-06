@@ -18,26 +18,12 @@
 
 -behaviour(rabbit_mgmt_extension).
 
--export([maybe_register/0]).
 -export([dispatcher/0, web_ui/0]).
 -export([init/1, to_json/2, content_types_provided/2, is_authorized/2]).
 
 -include_lib("rabbitmq_management/include/rabbit_mgmt.hrl").
 -include_lib("amqp_client/include/amqp_client.hrl").
 -include_lib("webmachine/include/webmachine.hrl").
-
-maybe_register() ->
-    case application:get_env(rabbitmq_management, extensions) of
-        {ok, Curr} ->
-            application:set_env(rabbitmq_management, extensions,
-                                ordsets:add_element(?MODULE, Curr)),
-            rabbit_mgmt_dispatcher:refresh(),
-            ok;
-        _ ->
-            ok
-    end.
-
-%%--------------------------------------------------------------------
 
 dispatcher() -> [{["shovel-status"], ?MODULE, []}].
 web_ui()     -> [{javascript, <<"shovel.js">>}].
