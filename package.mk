@@ -1,5 +1,5 @@
 RELEASABLE:=true
-DEPS:=rabbitmq-erlang-client webmachine-wrapper
+DEPS:=rabbitmq-erlang-client rabbitmq-management
 WITH_BROKER_TEST_COMMANDS:=rabbit_shovel_test:test()
 
 CONSTRUCT_APP_PREREQS:=$(shell find $(PACKAGE_DIR)/priv -type f)

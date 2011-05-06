@@ -16,6 +16,8 @@
 
 -module(rabbit_shovel_mgmt).
 
+-behaviour(rabbit_mgmt_extension).
+
 -export([maybe_register/0]).
 -export([dispatcher/0, web_ui/0]).
 -export([init/1, to_json/2, content_types_provided/2, is_authorized/2]).
