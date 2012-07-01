@@ -1,8 +1,0 @@
-~$
-\.beam$
-^dist/
-^deps/
-^deps.mk$
-^toke$
-^priv$
-^build/
