@@ -80,19 +80,19 @@ test() ->
         test_broken_shovel_sources([{broker, "invalid"}]),
 
     {expected_list,declarations, invalid} =
-        test_broken_shovel_sources([{broker, "amqp://"},
+        test_broken_shovel_sources([{broker, "rabbit-direct://"},
                                     {declarations, invalid}]),
     {unknown_method_name, 42} =
-        test_broken_shovel_sources([{broker, "amqp://"},
+        test_broken_shovel_sources([{broker, "rabbit-direct://"},
                                     {declarations, [42]}]),
 
     {expected_method_field_list, 'queue.declare', 42} =
-        test_broken_shovel_sources([{broker, "amqp://"},
+        test_broken_shovel_sources([{broker, "rabbit-direct://"},
                                     {declarations, [{'queue.declare', 42}]}]),
 
     {unknown_fields, 'queue.declare', [invalid]} =
         test_broken_shovel_sources(
-          [{broker, "amqp://"},
+          [{broker, "rabbit-direct://"},
            {declarations, [{'queue.declare', [invalid]}]}]),
 
     {{invalid_amqp_params_parameter, heartbeat, "text",
@@ -103,7 +103,7 @@ test() ->
     {{invalid_amqp_params_parameter, username, "text",
       [{"username", "text"}],
       {parameter_unconfigurable_in_query, username, "text"}}, _} =
-        test_broken_shovel_sources([{broker, "amqp://?username=text"}]),
+        test_broken_shovel_sources([{broker, "rabbit-direct://?username=text"}]),
 
     {invalid_parameter_value, prefetch_count,
      {require_non_negative_integer, invalid}} =
@@ -116,8 +116,8 @@ test() ->
 
     {invalid_parameter_value, queue,
      {require_binary, invalid}} =
-        test_broken_shovel_config([{sources, [{broker, "amqp://"}]},
-                                   {destinations, [{broker, "amqp://"}]},
+        test_broken_shovel_config([{sources, [{broker, "rabbit-direct://"}]},
+                                   {destinations, [{broker, "rabbit-direct://"}]},
                                    {queue, invalid}]),
 
     {invalid_parameter_value, publish_properties,
@@ -138,7 +138,7 @@ test() ->
       shovels,
       [{test_shovel,
         [{sources,
-          [{broker, "amqp:///%2f?heartbeat=5"},
+          [{broker, "rabbit-direct:///%2f?heartbeat=5"},
            {declarations,
             [{'queue.declare',    [exclusive, auto_delete]},
              {'exchange.declare', [{exchange, ?EXCHANGE}, auto_delete]},
@@ -146,7 +146,7 @@ test() ->
                                    {routing_key, ?TO_SHOVEL}]}
             ]}]},
          {destinations,
-          [{broker, "amqp:///%2f"}]},
+          [{broker, "rabbit-direct:///%2f"}]},
          {queue, <<>>},
          {ack_mode, on_confirm},
          {publish_fields, [{exchange, ?EXCHANGE}, {routing_key, ?FROM_SHOVEL}]},
