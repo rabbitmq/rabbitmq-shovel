@@ -80,19 +80,19 @@ test() ->
         test_broken_shovel_sources([{broker, "invalid"}]),
 
     {expected_list,declarations, invalid} =
-        test_broken_shovel_sources([{broker, "rabbit-direct://"},
+        test_broken_shovel_sources([{broker, "amqp://"},
                                     {declarations, invalid}]),
     {unknown_method_name, 42} =
-        test_broken_shovel_sources([{broker, "rabbit-direct://"},
+        test_broken_shovel_sources([{broker, "amqp://"},
                                     {declarations, [42]}]),
 
     {expected_method_field_list, 'queue.declare', 42} =
-        test_broken_shovel_sources([{broker, "rabbit-direct://"},
+        test_broken_shovel_sources([{broker, "amqp://"},
                                     {declarations, [{'queue.declare', 42}]}]),
 
     {unknown_fields, 'queue.declare', [invalid]} =
         test_broken_shovel_sources(
-          [{broker, "rabbit-direct://"},
+          [{broker, "amqp://"},
            {declarations, [{'queue.declare', [invalid]}]}]),
 
     {{invalid_amqp_params_parameter, heartbeat, "text",
@@ -116,8 +116,8 @@ test() ->
 
     {invalid_parameter_value, queue,
      {require_binary, invalid}} =
-        test_broken_shovel_config([{sources, [{broker, "rabbit-direct://"}]},
-                                   {destinations, [{broker, "rabbit-direct://"}]},
+        test_broken_shovel_config([{sources, [{broker, "amqp://"}]},
+                                   {destinations, [{broker, "amqp://"}]},
                                    {queue, invalid}]),
 
     {invalid_parameter_value, publish_properties,
