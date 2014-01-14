@@ -61,14 +61,11 @@ handle_cast(init, State = #state{config = Config}) ->
     (Destinations#endpoint.resource_declaration)(OutboundConn, OutboundChan),
 
     NoAck = Config#shovel.ack_mode =:= no_ack,
-    case NoAck of
-        false -> Prefetch = Config#shovel.prefetch_count,
-                 #'basic.qos_ok'{} =
-                     amqp_channel:call(
-                       InboundChan, #'basic.qos'{prefetch_count = Prefetch});
-        true  -> ok
-    end,
-
+    Prefetch = Config#shovel.prefetch_count,
+    Args = case NoAck orelse Prefetch =:= 0 of
+               true  -> [];
+               false -> [{<<"x-prefetch">>, long, Config#shovel.prefetch_count}]
+           end,
     case Config#shovel.ack_mode of
         on_confirm ->
             #'confirm.select_ok'{} =
@@ -80,8 +77,9 @@ handle_cast(init, State = #state{config = Config}) ->
 
     #'basic.consume_ok'{} =
         amqp_channel:subscribe(
-          InboundChan, #'basic.consume'{queue  = Config#shovel.queue,
-                                        no_ack = NoAck},
+          InboundChan, #'basic.consume'{queue     = Config#shovel.queue,
+                                        no_ack    = NoAck,
+                                        arguments = Args},
           self()),
 
     State1 =
