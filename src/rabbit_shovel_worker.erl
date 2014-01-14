@@ -61,8 +61,7 @@ handle_cast(init, State = #state{config = Config}) ->
     (Destinations#endpoint.resource_declaration)(OutboundConn, OutboundChan),
 
     NoAck = Config#shovel.ack_mode =:= no_ack,
-    Prefetch = Config#shovel.prefetch_count,
-    Args = case NoAck orelse Prefetch =:= 0 of
+    Args = case NoAck of
                true  -> [];
                false -> [{<<"x-prefetch">>, long, Config#shovel.prefetch_count}]
            end,
