@@ -63,7 +63,14 @@ handle_cast(init, State = #state{config = Config}) ->
     NoAck = Config#shovel.ack_mode =:= no_ack,
     Args = case NoAck of
                true  -> [];
-               false -> [{<<"x-prefetch">>, long, Config#shovel.prefetch_count}]
+               false -> Prefetch = Config#shovel.prefetch_count,
+                        case supports_consumer_prefetch(InboundConn) of
+                            true  -> [{<<"x-prefetch">>, long, Prefetch}];
+                            false -> amqp_channel:call(
+                                       InboundChan,
+                                       #'basic.qos'{prefetch_count = Prefetch}),
+                                     []
+                        end
            end,
     case Config#shovel.ack_mode of
         on_confirm ->
@@ -152,6 +159,12 @@ code_change(_OldVsn, State, _Extra) ->
 %%---------------------------
 %% Helpers
 %%---------------------------
+
+supports_consumer_prefetch(Conn) ->
+    [{server_properties, Props}] =
+        amqp_connection:info(Conn, [server_properties]),
+    {table, Caps} = rabbit_misc:table_lookup(Props, <<"capabilities">>),
+    {bool, true} =:= rabbit_misc:table_lookup(Caps, <<"consumer_prefetch">>).
 
 confirm_to_inbound(MsgCtr, Seq, Multiple, State =
                        #state{inbound_ch = InboundChan, unacked = Unacked}) ->
