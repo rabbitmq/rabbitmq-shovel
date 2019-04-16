@@ -67,11 +67,20 @@ handle_cast(init, State = #state{config = Config}) ->
     %% if we try to shut down while waiting for a connection to be
     %% established then we don't block
     process_flag(trap_exit, true),
-    Config3 = rabbit_shovel_behaviour:init_dest(Config2),
-    Config4 = rabbit_shovel_behaviour:init_source(Config3),
-    State1 = State#state{config = Config4},
-    ok = report_running(State1),
-    {noreply, State1}.
+
+    try
+      Config3 = rabbit_shovel_behaviour:init_dest(Config2),
+      Config4 = rabbit_shovel_behaviour:init_source(Config3),
+
+      State1 = State#state{config = Config4},
+      ok = report_running(State1),
+      {noreply, State1}
+    catch _:Error ->
+      rabbit_log:error("Shovel successfully connected but failed to initialise topology (source or destination): ~p", [Error]),
+      %% makes sure source and destination connection pids are recorded for terminate/2
+      %% and such. See rabbitmq/rabbitmq-shovel#54.
+      {noreply, State#state{config = Config2}}
+    end.
 
 
 handle_info(Msg, State = #state{config = Config, name = Name}) ->
